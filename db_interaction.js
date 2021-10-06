@@ -2,6 +2,22 @@
 
 const bridge = function(con) {
 	return {
+		// Get Asset Tags : asset_id
+		getAssetTags: function(values, callback) {
+			con.query('SELECT tag.id, tag.name FROM asset_tag INNER JOIN tag ON tag.id = asset_tag.tag_id WHERE asset_tag.asset_id = ?', [ values.assetId ],
+				(error, results, fields) => {
+					return callback(error, results, fields);
+				});
+		},
+		
+		// Get Asset Images : asset_id
+		getAssetImages: function(values, callback) {
+			con.query('SELECT * FROM asset_image WHERE asset_image.asset_id = ?', [ values.assetId ],
+				(error, results, fields) => {
+					return callback(error, results, fields);
+				});
+		},
+		
 		// Create Asset Tag : assetId, tagId
 		createAssetTag: function(values, callback) {
 			con.query('INSERT INTO asset_tag(asset_id, tag_id) VALUES(?, ?)', [ values.assetId, values.tagId ], // SQL, Values replacing ?
@@ -16,19 +32,27 @@ const bridge = function(con) {
 				return callback(error, results, fields);
 			});
 		},
-		// Get Asset : assetId
-		getAsset: function(values, callback) {
-			con.query('SELECT asset.id, asset.name, asset.description, asset.author, asset.license, asset.source, asset.submission_date FROM asset WHERE asset.id = ?', [ values.assetId ],
+		
+		// Create Asset Image : assetId, source
+		createAssetImage: function(values, callback) {
+			con.query('INSERT INTO asset_image(asset_id, source) VALUES(?, ?)', [ values.assetId, values.assetImageSource ],
+				(error, results, fields) => {
+					return callback(error, results, fields);
+				});
+		},
+		// Delete Asset Image : assetImageId
+		deleteAssetImage: function(values, callback) {
+			con.query('DELETE FROM asset_image WHERE asset_image.id = ?', [ values.assetImageId ],
 			(error, results, fields) => {
 				return callback(error, results, fields);
 			});
 		},
+		
 		// Create Asset : assetName, assetDescription, assetAuthor, assetLicense, assetSource
 		createAsset: function(values, callback) {
-			con.query('INSERT INTO asset(name, description, author, license, source) VALUES(?, ?, ?, ?, ?)',  values.assetName, values.assetDescription, values.assetAuthor, values.assetLicense, values.assetSource ],
+			con.query('INSERT INTO asset(name, description, author, license, source) VALUES(?, ?, ?, ?, ?)',  [ values.assetName, values.assetDescription, values.assetAuthor, values.assetLicense, values.assetSource ],
 			(error, results, fields) => {
-				callback(error, results, fields);
-				return;
+				return callback(error, results, fields);
 			});
 		},
 		// Get Asset : assetId
@@ -58,6 +82,7 @@ const bridge = function(con) {
 				});
 			});
 		},
+		
 		// Create Tag : tagName
 		createTag: function(values, callback) {
 			con.query('INSERT INTO tag(name) VALUES(?)', [ values.tagName ],
