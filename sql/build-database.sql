@@ -1,7 +1,6 @@
-DROP TABLE IF EXISTS tags;
+DROP TABLE IF EXISTS asset_tag;
 DROP TABLE IF EXISTS tag;
-DROP TABLE IF EXISTS preview;
-DROP TABLE IF EXISTS preview_content;
+DROP TABLE IF EXISTS asset_image;
 DROP TABLE IF EXISTS asset;
 
 CREATE TABLE asset
@@ -15,19 +14,22 @@ CREATE TABLE asset
 	submission_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE asset_image
+(
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	asset_id INT NOT NULL,
+    source VARCHAR(1023) NOT NULL,
+    
+	FOREIGN KEY (asset_id) REFERENCES asset (id)
+);
+
 CREATE TABLE tag
 (
 	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	name VARCHAR(127) NOT NULL UNIQUE
 );
 
-CREATE TABLE preview_content
-(
-	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	source VARCHAR(1023) NOT NULL UNIQUE
-);
-
-CREATE TABLE tags
+CREATE TABLE asset_tag
 (
     asset_id INT NOT NULL,
     tag_id INT NOT NULL,
@@ -41,16 +43,4 @@ CREATE TABLE tags
 	)
 );
 
-CREATE TABLE preview
-(
-    asset_id INT NOT NULL,
-    content_id INT NOT NULL,
-    
-	FOREIGN KEY (asset_id) REFERENCES asset (id),
-	FOREIGN KEY (content_id) REFERENCES preview_content (id),
-	
-	PRIMARY KEY
-	(
-		asset_id, content_id
-	)
-);
+INSERT INTO asset (name, description, author, source) VALUES ('Ant Design', 'Comprehensive design guidelines, best practices, resources, and tools to help designers produce high-quality product prototypes.', 'Ant Design', 'https://ant.design/docs/spec/introduce') 
