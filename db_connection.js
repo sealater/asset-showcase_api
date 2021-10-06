@@ -5,7 +5,7 @@ const mysql = require('mysql');
 const connection = mysql.createConnection({
   host: "localhost",
   user: "davise",
-  password: "UhBCEBPukWaJAdFW",
+  password: "THIS FILE BELONGS IN .GITIGNORE... NEVER AGAIN.",
   database: "davise"
 });
 
