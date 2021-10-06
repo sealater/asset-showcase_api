@@ -1,5 +1,5 @@
 # Custom
-ignore db_connection.js
+db_connection.js
 
 # Logs
 logs
