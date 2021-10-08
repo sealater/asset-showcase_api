@@ -62,6 +62,21 @@ const bridge = function(con) {
 				return callback(error, results, fields);
 			});
 		},
+		// Get Assets : quantity
+		getAssets: function(values, callback) {
+			if (values.quantity) {
+				con.query('SELECT * FROM asset ORDER BY asset.id DESC LIMIT ?', [ values.quantity ],
+				(error, results, fields) => {
+					return callback(error, results, fields);
+				});
+			}
+			else {
+				con.query('SELECT * FROM asset ORDER BY asset.id DESC',
+				(error, results, fields) => {
+					return callback(error, results, fields);
+				});
+			}
+		},
 		// Update Asset : assetId, assetName, assetDescription, assetAuthor, assetLicense, assetSource
 		updateAsset: function(values, callback) {
 			con.query('UPDATE asset SET asset.name = ?, asset.description = ?, asset.author = ?, asset.license = ?, asset.source = ? WHERE asset.id = ?', [ values.assetName, values.assetDescription, values.assetAuthor, values.assetLicense, values.assetSource, values.assetId ],
@@ -117,9 +132,3 @@ const bridge = function(con) {
 }
 
 module.exports = bridge
-/*
-con.query('SELECT 1 + 1 AS solution', (error, results, fields) => {
-	if (error) throw error;
-	console.log('The solution is: ', results[0].solution;
-});
-*/

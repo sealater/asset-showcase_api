@@ -5,6 +5,9 @@ const express = require('express')
 const app = express()
 const port = 3000
 
+// CORS Library
+const cors = require('cors');
+
 // MySQL Setup
 const con = require('./db_connection.js') // con as "connection"
 
@@ -14,6 +17,11 @@ const bridge = require('./db_interaction.js')(con);
 // Express Middleware
 app.use(express.json());
 app.use(express.urlencoded());
+
+// Enable CORS
+app.use(cors({
+	origin: '*'
+}));
 
 // Validate Posted Values
 function validPost(values) {
@@ -34,6 +42,7 @@ function bridgeAction(action, values, res) {
 	
 	action(values, (error, results, fields) => {
 		if (error !== null) {
+			console.log(error);
 			return res.end(JSON.stringify(error));
 		}
 		
@@ -60,6 +69,8 @@ app.post('/test', function(req, res) {
 
 // Asset API Routing
 app.post('/asset', function(req, res) {
+	console.log(req.headers);
+	
 	const values = {
 		assetName: req.body.assetName,
 		assetDescription: req.body.assetDescription,
@@ -69,6 +80,14 @@ app.post('/asset', function(req, res) {
 	}
 	
 	bridgeAction(bridge.createAsset, values, res);
+});
+
+app.get('/asset', function(req, res) {
+	const values = {
+		quantity: req.body.quantity
+	}
+	
+	bridgeAction(bridge.getAssets, values, res);
 });
 
 app.route('/asset/:assetId')
